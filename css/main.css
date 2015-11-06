@@ -42,6 +42,11 @@
     border-radius: 0;
     background-color: #e3e3e3;
 	margin-bottom: 30px;
+	outline: none;
+	border: none !important;
+	-webkit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
 }
 
 .search-result-title {
@@ -62,10 +67,9 @@
 	border-bottom: 1px solid #4882be;
 	text-transform: uppercase;
 	color: #606060; 
-	font-size: 1.2em;
-	font-weight: bold;
-	padding-top: 5px;
-	padding-bottom: 5px;
+    font-size: 1.3em;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .footer-header-item:first-child {
@@ -75,4 +79,6 @@
 .footer-item {
 	color: #3d3d3d;
 	list-style: none;
+    line-height: 2em;
+    font-size: 1.1em;
 }
