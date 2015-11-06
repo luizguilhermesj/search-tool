@@ -6,14 +6,76 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Search</title>
     	<link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="main.css"/>
+		<link rel="stylesheet" type="text/css" href="css/main.css"/>
 	</head>
 	<body>
-		<header></header>
-
-		<div>
-			<input type="text" data-search />
-			<div data-search-result-set data-template-id="search-result"></div>
+		<header class="container-fluid header">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12">
+						<img src="images/devv.png" alt="Devv Logo"/>
+					</div>
+				</div>
+			</div>
+		</header>
+	
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="search clearfix">
+						<div class="col-md-8 col-md-offset-2">
+							<h3 class="search-title">
+								<span class="glyphicon glyphicon-search search-icon" aria-hidden="true"></span>
+								Search
+							</h3>
+							<input data-search type="text" class="form-control search-input" placeholder="Search..."/>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<h3 class="search-result-title">Search Results</h3>
+					<div data-search-result-set data-template-id="search-result">
+						<p>No results for the current search</p>
+					</div>
+				</div>
+			</div>
+			
+			<footer class="row footer">
+				<div class="col-md-12">
+					<div class="footer-header">
+						<div class="col-md-3 col-sm-6 nopadding">
+							<h5 class="footer-header-item">DEVV</h5>
+							<ul class="nopadding">
+								<li class="footer-item">What is it like?</li>
+								<li class="footer-item">Contact us</li>
+							</ul>
+						</div>
+						<div class="col-md-3 col-sm-6 nopadding">
+							<h5 class="footer-header-item">Consulting</h5>
+							<ul class="nopadding">
+								<li class="footer-item">Services</li>
+								<li class="footer-item">Career</li>
+								<li class="footer-item">Work for us</li>
+							</ul>
+						</div>
+						<div class="col-md-3 col-sm-6 nopadding">
+							<h5 class="footer-header-item">Search</h5>
+							<ul class="nopadding">
+								<li class="footer-item">Headhunting</li>
+								<li class="footer-item">Relocation package for Developers</li>
+							</ul>
+						</div>
+						<div class="col-md-3 col-sm-6 nopadding">
+							<h5 class="footer-header-item">Network</h5>
+							<ul class="nopadding">
+								<li class="footer-item">Partners</li>
+								<li class="footer-item">Devv Family</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</footer>
+			
 		</div>
 
 
@@ -22,8 +84,8 @@
 			<div id="search">
 				<div class="list-group">
 					{{#resultSet}}
-  						<a href="#" class="list-group-item">
-						    <h4 class="list-group-item-heading">{{ Name }} <small>{{ Designed by }}</small></h4>
+  						<a id="{{ Name }}" href="#{{ Name }}" class="list-group-item">
+						    <h4 class="list-group-item-heading">{{ Name }} <small>by: {{ Designed by }}</small></h4>
 						    <p class="list-group-item-text">{{ Type }}</p>
 						</a>
 					{{/resultSet}}
@@ -33,6 +95,6 @@
 
 		<script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
 		<script type="text/javascript" src="node_modules/mustache/mustache.min.js"></script>
-		<script type="text/javascript" src="search.js"></script>
+		<script type="text/javascript" src="js/search.js"></script>
 	</body>
 </html>

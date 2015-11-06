@@ -1,22 +1,26 @@
 /**
  * This is the Search Component
  *
- * To use it, you just have to create an input with a data attribute called "data-search", like this:
- * <input type='text' data-search ></input>
- * 
- * This component will only be loaded when the user interacts with the input, not before.
+ * Go to README.md to se how to use it
  *
 */
 (function($, Mustache){
+	// The component flow starts at the bottom, in an event listener for "focus" event, roll down and start reading from there.
+	
 	var Search = function(el) {
+		// making searches on DOM in the component initalization and storing it
+		// this improves performance, because whe don't need to search for the elements again after this
 		this.$el = $(el);
 		this.$resultSetContainer = $('[data-search-result-set]');
+		
+		// get the default content
+		this.defaultTemplate = this.$resultSetContainer.html();
 		this.template = $('#' + this.$resultSetContainer.data('templateId')).html();
 		this.data = null;
 		this.dataFiltered = null;
 		
 		// get the data 
-		$.getJSON('data.json', $.proxy(this, 'setData'));
+		$.getJSON('js/data.json', $.proxy(this, 'setData'));
 
 		// parse mustache template, to optimize rendering
 		Mustache.parse(this.template);
@@ -29,6 +33,8 @@
 
 		// listen to end key presses (keyup) and filter data when it happens
 		this.$el.on('keyup', $.proxy(this, 'filterData'));
+		
+		// listen to new data filtered, then start to render the result set
 		this.$el.on('data-filtered', $.proxy(this, 'renderResultSet'));
 	}
 
@@ -36,48 +42,56 @@
 		this.data = data;
 	};
 
+	// render the template provided with the data filtered by the search
+	Search.prototype.renderResultSet = function(e) {
+		// if there is no data filtered, set the template as the previous content of the result set container
+		var template = (this.dataFiltered.length > 0) ? this.template : this.defaultTemplate;
+		
+		// render the template using Mustache
+		var rendered = Mustache.render(template, {resultSet: this.dataFiltered});
+		this.$resultSetContainer.html(rendered);
+	};
+
 
 	// filter the data.json according to the user input
-	// then 
+	// then trigger data-filtered event
 	Search.prototype.filterData = function(e) {
 		// if ajax didn't ended, data is null, so do nothing
 		if (this.data == null) return;
 		this.dataFiltered = new Array();
-
+		
+		// if input is empty, render empty result set (dataFiltered)
+		if (this.$el.val() == "") return this.$el.trigger('data-filtered');
+		
 		// get string of the input and slipt it to get the words typed
 		var words = this.$el.val().split(" ");
+		
 
-		for (var i=0; i < this.data.length; i++) {
+		// loop all records provided by data.json
+		for (var i in this.data) {
 			var record = this.data[i];
 
-			// Find the words in the 
-			for (var j=0; j < words.length; j++) {
+			// Loop all words of the input and search for it in the current record being looped,
+			// at the first match, add it to dataFiltered
+			// then break the words loop
+			for (var j in words) {
 				var word = words[j].toLowerCase();
+				var stopWordsLoop = false;
 
-				if (record.Name.toLowerCase().indexOf(word) > -1) {
-					this.dataFiltered.push(record);
-					break;
-				};
-
-				if (record.Type.toLowerCase().indexOf(word) > -1) {
-					this.dataFiltered.push(record);
-					break;
-				};
-
-				if (record['Designed by'].toLowerCase().indexOf(word) > -1) {
-					this.dataFiltered.push(record);
-					break;
-				};
+				for (var k in record) {
+					if (record[k].toLowerCase().indexOf(word) > -1) {
+						this.dataFiltered.push(record);
+						stopWordsLoop = true;
+						break;
+					}
+				}
+				
+				if (stopWordsLoop) break;
 			};
 		};
 
 		// trigger event to tell that there is new data filtered
 		this.$el.trigger('data-filtered');
-	};
-
-	Search.prototype.renderResultSet = function(e) {
-		var rendered = Mustache.render(this.template, {resultSet: this.dataFiltered});
-		this.$resultSetContainer.html(rendered);
 	};
 
 	// Load on focus event

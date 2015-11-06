@@ -1,0 +1,19 @@
+{
+  "name": "search-tool",
+  "version": "1.0.0",
+  "description": "Search tool, an interview test",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luizguilhermesj/search-tool.git"
+  },
+  "author": "Luiz Guilherme da Silva Junior",
+  "bugs": {
+    "url": "https://github.com/luizguilhermesj/search-tool/issues"
+  },
+  "homepage": "https://github.com/luizguilhermesj/search-tool#readme",
+  "dependencies": {
+    "bootstrap": "^3.3.5",
+    "jquery": "^2.1.4",
+    "mustache": "^2.2.0"
+  }
+}
