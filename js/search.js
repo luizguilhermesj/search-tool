@@ -20,7 +20,7 @@
 		this.dataFiltered = null;
 		
 		// get the data 
-		$.getJSON('js/data.json', $.proxy(this, 'setData'));
+		$.getJSON(this.$el.data('url'), $.proxy(this, 'setData'));
 
 		// parse mustache template, to optimize rendering
 		Mustache.parse(this.template);
@@ -60,13 +60,23 @@
 		if (this.data == null) return;
 		this.dataFiltered = new Array();
 		
+		// The value of the search input (What the user has typed)
+		var inputValue = this.$el.val();
+		
 		// if input is empty, render empty result set (dataFiltered)
-		if (this.$el.val() == "") return this.$el.trigger('data-filtered');
+		if (inputValue == "") return this.$el.trigger('data-filtered');
 		
-		// get string of the input and slipt it to get the words typed
-		var words = this.$el.val().split(" ");
+		// exact matches regex
+		var exactMatchRegex = /".*?"/g;
+		// find exact matches and add to words
+		var words = inputValue.match(exactMatchRegex);
+		words = words === null ? new Array() : words.map(function(s){ return s.replace(/"/g,'') });
+		// remove exact matches from inputValue
+		inputValue = inputValue.replace(exactMatchRegex, '');
 		
-
+		// get the rest of the words in inputValue and concat with exact matches
+		words = $.merge(words, inputValue.match(/[^ ]+/g) || []);
+		
 		// loop all records provided by data.json
 		for (var i in this.data) {
 			var record = this.data[i];
