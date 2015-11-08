@@ -5,7 +5,7 @@
 - mustache ^2.2.0
 - bootstrap ^3.3.5 (optional, just for the index.html example)
 
-to install the dependencies, at the root of the project, run:
+To install the dependencies, at the root of the project, run:
 
 ```shell
 npm install
@@ -15,31 +15,49 @@ npm install
 
 To use it, you just have to create an input with a data attribute called `data-search`, like this:
 ```html
-<input type='text' data-search ></input>
+<input data-search ... type='text' ></input>
 ```
 
 This component will only be loaded when the user interacts with this input, not before.
- 
-The result of the search will be rendered in a container with `data-search-result-set` attribute, that you must set as follow:
+
+There are some options that you have to declare as data attributes too:
+
 ```html
-<div data-search-result-set data-template-id="search-result">
+<input 
+    data-search
+    data-result-set-id="result-set"
+    data-url="js/data.json"
+    data-template-id="search-result"
+    ...
+    type='text' >
+</input>
+```
+
+- data-url: the url that will retrive the data set
+- data-template-id: the element id that contains the mustache template
+- data-result-set-id: the element id that will be the container for the result set
+
+The result of the search will be rendered in the container indicated by `data-result-set-id` attribute, that you must set as follow:
+```html
+<input data-result-set-id="result-set" ... type='text' ></input>
+<div id="result-set">
 	<p> No search results yet </p>
 </div>
 ```
-
 
 The content maybe whatever you want, it will be override by the result set and reloaded when no results are found 
 
 The `data-template-id` indicates the element id of the mustache template that you want to use to render the result set
 it would be something like this:
 ```html
+<input data-template-id="search-result" ... type='text' ></input>
 <script id="search-result" type="x-tmpl-mustache">
 	//your template here ...
 </script>
 ```
 
 
-The data set must be in the following format:
+The data set offered by the indicated URL must be in the following format:
 ```javascript
 [
     {

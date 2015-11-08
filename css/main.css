@@ -53,6 +53,11 @@
 	color: #4882be;
 }
 
+.search-result-set {
+	max-height: 400px;
+	overflow-y: auto;	
+}
+
 
 /*
  *   FOOTER

@@ -2,20 +2,20 @@
  * This is the Search Component
  *
  * Go to README.md to se how to use it
- *
+ * note: for better understanding reasons, the above code is all commented
 */
 (function($, Mustache){
 	// The component flow starts at the bottom, in an event listener for "focus" event, roll down and start reading from there.
 	
 	var Search = function(el) {
-		// making searches on DOM in the component initalization and storing it
+		// making searches on DOM in the component initalization and store the found elements
 		// this improves performance, because whe don't need to search for the elements again after this
 		this.$el = $(el);
-		this.$resultSetContainer = $('[data-search-result-set]');
+		this.$resultSetContainer = $('#' + this.$el.data('resultSetId'));
+		this.template = $('#' + this.$el.data('templateId')).html();
 		
 		// get the default content
 		this.defaultTemplate = this.$resultSetContainer.html();
-		this.template = $('#' + this.$resultSetContainer.data('templateId')).html();
 		this.data = null;
 		this.dataFiltered = null;
 		
@@ -30,8 +30,7 @@
 	};
 
 	Search.prototype.startListeners = function() {
-
-		// listen to end key presses (keyup) and filter data when it happens
+		// listen to when key press ends (keyup) and filter data when it happens
 		this.$el.on('keyup', $.proxy(this, 'filterData'));
 		
 		// listen to new data filtered, then start to render the result set
@@ -58,6 +57,8 @@
 	Search.prototype.filterData = function(e) {
 		// if ajax didn't ended, data is null, so do nothing
 		if (this.data == null) return;
+		
+		// clear dataFiltered, removing previous search
 		this.dataFiltered = new Array();
 		
 		// The value of the search input (What the user has typed)
@@ -66,38 +67,66 @@
 		// if input is empty, render empty result set (dataFiltered)
 		if (inputValue == "") return this.$el.trigger('data-filtered');
 		
+		// when
+		inputValue = (inputValue.split('"').length - 1) % 2 == 0 ? inputValue : inputValue.replace(/"([^"]*)$/,'$1');
+				
 		// exact matches regex
 		var exactMatchRegex = /".*?"/g;
+		
 		// find exact matches and add to words
-		var words = inputValue.match(exactMatchRegex);
-		words = words === null ? new Array() : words.map(function(s){ return s.replace(/"/g,'') });
+		var words = inputValue.match(exactMatchRegex) || new Array();
+		if (words.length > 0) {
+			words = words.map(function(s) {
+				return s.replace(/"/g,'');
+			});
+		}
+		
 		// remove exact matches from inputValue
 		inputValue = inputValue.replace(exactMatchRegex, '');
 		
-		// get the rest of the words in inputValue and concat with exact matches
+		// get the rest of the words divided by whitespace in inputValue and merge
+		// with exact matches, that are already stored in the `words` array
 		words = $.merge(words, inputValue.match(/[^ ]+/g) || []);
 		
 		// loop all records provided by data.json
 		for (var i in this.data) {
 			var record = this.data[i];
+			var countMatches = 0;
+			var countNegativeMatches = 0;
 
-			// Loop all words of the input and search for it in the current record being looped,
-			// at the first match, add it to dataFiltered
-			// then break the words loop
+			// Loop all words of the input and search for it in the current record being looped
+			// count how many words and negative matches are found
 			for (var j in words) {
 				var word = words[j].toLowerCase();
-				var stopWordsLoop = false;
+				// if is a negative search
+				(word.charAt(0) == '-') ? countMatches++ : null;
 
 				for (var k in record) {
+					// if is a negative match search, the logic is a little different 
+					if (word.charAt(0) == '-') {
+						//search the negative match
+						var realWord = word.slice(1);
+						if (record[k].toLowerCase().indexOf(realWord) > -1) {
+							// increment negative match counter
+							countNegativeMatches++;
+							break;
+						}
+						
+						//prevent normal search of the word
+						continue;
+					}
+					
+					// search the word and increment counter
 					if (record[k].toLowerCase().indexOf(word) > -1) {
-						this.dataFiltered.push(record);
-						stopWordsLoop = true;
+						countMatches++;
 						break;
 					}
 				}
 				
-				if (stopWordsLoop) break;
 			};
+			
+			// if all the words are found and there is no negative match, add it to data filtered, wich will be displayed as the resultset
+			if (countNegativeMatches == 0 && countMatches == words.length) this.dataFiltered.push(record);			
 		};
 
 		// trigger event to tell that there is new data filtered

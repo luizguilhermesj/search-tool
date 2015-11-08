@@ -28,13 +28,18 @@
 								<span class="glyphicon glyphicon-search search-icon" aria-hidden="true"></span>
 								Search
 							</h3>
-							<input data-search data-url="js/data.json" type="text" class="form-control search-input" placeholder="Search..."/>
+							<input
+								data-search
+								data-url="js/data.json"
+								data-template-id="search-result"
+								data-result-set-id="result-set"
+								type="text" class="form-control search-input" placeholder="Search..."/>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-12">
 					<h3 class="search-result-title">Search Results</h3>
-					<div data-search-result-set data-template-id="search-result">
+					<div id="result-set">
 						<p>No results for the current search</p>
 					</div>
 				</div>
@@ -81,13 +86,13 @@
 
 
 		<script id="search-result" type="x-tmpl-mustache">
-			<div id="search">
-				<div class="list-group">
+			<div id="search" class="search-result-set">
+				<div class="search-result-set">
 					{{#resultSet}}
-  						<a id="{{ Name }}" href="#{{ Name }}" class="list-group-item">
+  						<ul id="{{ Name }}" href="#{{ Name }}" class="list-group-item">
 						    <h4 class="list-group-item-heading">{{ Name }} <small>by: {{ Designed by }}</small></h4>
 						    <p class="list-group-item-text">{{ Type }}</p>
-						</a>
+						</ul>
 					{{/resultSet}}
 				</div>
 			</div>
