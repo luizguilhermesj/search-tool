@@ -1,15 +1,22 @@
 /**
  * This is the Search Component
+ * Author: Luiz Guilherme
+ * https://github.com/luizguilhermesj/search-tool
  *
  * Go to README.md to se how to use it
  * note: for better understanding reasons, the code below is all commented
+ * 
+ * Licensed under MIT (https://github.com/luizguilhermesj/search-tool/blob/master/LICENSE)
 */
 (function($, Mustache){
+	
+	'use strict';
+	
 	// The component flow starts at the bottom, in an event listener for "focus" event, roll down and start reading from there.
 	
 	var Search = function(el) {
 		// making searches on DOM in the component initalization and store the found elements
-		// this improves performance, because whe don't need to search for the elements again after this
+		// this improves performance, because we don't need to search for the elements again after this
 		this.$el = $(el);
 		this.$resultSetContainer = $('#' + this.$el.data('resultSetId'));
 		this.template = $('#' + this.$el.data('templateId')).html();
