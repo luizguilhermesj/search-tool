@@ -2,7 +2,7 @@
  * This is the Search Component
  *
  * Go to README.md to se how to use it
- * note: for better understanding reasons, the above code is all commented
+ * note: for better understanding reasons, the code below is all commented
 */
 (function($, Mustache){
 	// The component flow starts at the bottom, in an event listener for "focus" event, roll down and start reading from there.
@@ -67,7 +67,7 @@
 		// if input is empty, render empty result set (dataFiltered)
 		if (inputValue == "") return this.$el.trigger('data-filtered');
 		
-		// when
+		// prevent strange behavior when user starts typing exact match
 		inputValue = (inputValue.split('"').length - 1) % 2 == 0 ? inputValue : inputValue.replace(/"([^"]*)$/,'$1');
 				
 		// exact matches regex
